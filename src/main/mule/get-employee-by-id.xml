@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="get-employee-by-idFlow" doc:id="4e9a9dac-9e98-4885-bda6-98779fb0b35d" >
+		<http:listener doc:name="Get Employee Listener" doc:id="71e515f6-5002-4ff0-a184-6f9af876c0b2" config-ref="HTTP_Listener_config2" path="/get-employee"/>
+		<logger level="INFO" doc:name="Start Logger" doc:id="084a8090-3414-442e-8e32-3c1bd99cd651" message="started get employee by ID flow"/>
+		<db:select doc:name="Select" doc:id="2491356d-b8c2-4f16-87e2-db863168e583" config-ref="Database_Config">
+			<db:sql ><![CDATA[select emp_id, emp_name, emp_status from employ where emp_id=:empId]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	empId: attributes.queryParams.employeeId
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="9a86986c-3a57-4060-a439-31261ac8e7fe" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	employeeID: payload[0].EMP_ID,
+	employeeName: payload[0].EMP_NAME,
+	employeeStatus: payload[0].EMP_STATUS
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="End Logger" doc:id="fe76a3f3-eefe-4392-81c8-39271cedbe28" message="ended get employee by ID flow"/>
+	</flow>
+</mule>

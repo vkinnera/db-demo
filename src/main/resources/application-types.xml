@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="success-response" format="json">
+      <types:shape format="weave" example="examples/response.json"><![CDATA[%dw 2.0
+
+type success_response = {|
+  status: Number {"typeId": "int"}, 
+  message: String
+|} {"example": "{\\\"status\\\":200,\\\"message\\\":\\\"success\\\"}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="success-xml-response" format="xml">
+      <types:example format="xml" element="response" location="examples/update-response.xml"/>
+    </types:type>
+    <types:type name="get-employee" format="json">
+      <types:shape format="weave" example="examples/get-employee-response.json"><![CDATA[%dw 2.0
+
+type get_employee = Array<{|  employeeID: Number {"typeId": "int"},   employeeName: String,   employeeStatus: String|}> {"example": "[{\\\"employeeID\\\":101,\\\"employeeName\\\":\\\"vamsi\\\",\\\"employeeStatus\\\":\\\"A\\\"},{\\\"employeeID\\\":103,\\\"employeeName\\\":\\\"kinnera\\\",\\\"employeeStatus\\\":\\\"I\\\"}]"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#8740be25-5655-4182-8f7e-0ee1b85e0c10">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="success-response"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#8b974248-6460-4132-8df6-69bd625f4276">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="success-xml-response"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#9a86986c-3a57-4060-a439-31261ac8e7fe">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="success-response"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#cec3db08-a451-4127-a801-fc70fb6e7e33">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="get-employee"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#e1a01334-49ba-4390-8506-b9fea0810193">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="success-response"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="delete-employFlow" doc:id="45f15671-81ab-47ed-9a62-2e714bb51ef7" >
+		<http:listener doc:name="Listener" doc:id="deb4b22f-1c6d-40f0-9ee4-0158e0808ab7" config-ref="HTTP_Listener_config2" path="/delete-employee/{employeeID}/{employeeName}" allowedMethods="DELETE"/>
+		<logger level="INFO" doc:name="Logger" doc:id="fa482d64-27d2-4ed9-a5e5-385f947193f8" message="delete employ flow started"/>
+		<db:stored-procedure doc:name="call Delete Employee Stored procedure" doc:id="95fb3bb4-1882-490c-b82e-1cb8f966a45c" config-ref="Database_Config">
+			<db:sql ><![CDATA[{call delete_employ(:empId, :empName)}]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	empId: attributes.uriParams.employeeID,
+	empName: attributes.uriParams.employeeName
+}]]]></db:input-parameters>
+		</db:stored-procedure>
+		<ee:transform doc:name="set response" doc:id="e1a01334-49ba-4390-8506-b9fea0810193" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	status: 200,
+	message: "success"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="2cdc5302-5dd5-4f2d-b732-946e42942cfa" message="complete delete emp flow"/>
+	</flow>
+</mule>
